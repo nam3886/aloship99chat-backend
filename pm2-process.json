@@ -1,0 +1,11 @@
+{
+    "apps": [
+      {
+        "name": "ship99-peerjs",
+        "script": "./index.js",
+        "watch": true,
+        "ignore_watch": ["uploads", "node_modules"]
+      }
+    ]
+  }
+  
