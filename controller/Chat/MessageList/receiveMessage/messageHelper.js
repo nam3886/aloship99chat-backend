@@ -110,7 +110,9 @@ const processMessageContent = async ({
 
     // Use pre-fetched data instead of individual queries
     const isDeleted = deletedMessageIds.has(item.message_id);
-    if (isDeleted) continue;
+    if (isDeleted) {
+      continue;
+    }
 
     // Skip order messages that are accepted, completed, or cancelled
     if (item.message_type === 'order' && item.Order) {

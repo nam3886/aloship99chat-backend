@@ -226,7 +226,13 @@ const sendMessage = async (req, res) => {
 
     // return res.send("Hello Send");
     // -------------------------------------------- Create the Chat ---------------------------------------------------- //
-    const newMessage = await Chat.create(updateFields);
+    let newMessage;
+    try {
+      newMessage = await Chat.create(updateFields);
+    } catch (createError) {
+      console.error('Failed to create message:', createError.message);
+      throw createError;
+    }
 
     // If it's an order message, create the Order record
     // order_details is optional - initial values can be empty, driver fills actual data later
@@ -318,12 +324,8 @@ const sendMessage = async (req, res) => {
 
     let singleChat = await Chat.findOne({
       where: {
-        conversation_id,
+        message_id: newMessage.message_id,  // ✅ FIX: Query by specific message_id instead of latest
       },
-      order: [
-        ["message_id", "DESC"], // Order by message_id in descending order
-      ],
-      limit: 1, // Limit the result to 1 row to see latest message
       include: [
         {
           model: Order,
@@ -535,12 +537,15 @@ const sendMessage = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("Error sending message:", error);
-    // Emit an error message to the sender
-    // socket.emit("errorMessage", {
-    //   status: false,
-    //   message: "An error occurred while sending the message",
-    // });
+    console.error('Error in sendMessage:', error.message);
+    // Return error response to client if not already sent
+    if (!res.headersSent) {
+      return res.status(500).json({
+        status: false,
+        message: "An error occurred while sending the message",
+        error: error.message
+      });
+    }
   }
 };
 

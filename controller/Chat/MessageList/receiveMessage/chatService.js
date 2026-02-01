@@ -73,7 +73,7 @@ const getMessages = async ({
         model: Order,
         required: false,
         attributes: [
-          'order_id', 
+          'order_id',
           'message_id',
           'customer_name',
           'delivery_location',
