@@ -39,6 +39,7 @@ const sendMessage = async (req, res) => {
       thumbnail,
       other_user_id,
       order_details, // For order messages
+      client_timestamp, // Timestamp when client sends the message (for correct ordering)
 
       // filename,
       // thumbnailName,
@@ -162,6 +163,11 @@ const sendMessage = async (req, res) => {
       "shared_contact_profile_image",
       shared_contact_profile_image
     );
+
+    // Add client_timestamp for correct message ordering
+    if (client_timestamp) {
+      updateFields.client_timestamp = parseInt(client_timestamp, 10);
+    }
 
     // if (req.files && url.length != 0) {
     //   updateFields.url = url[0].path;

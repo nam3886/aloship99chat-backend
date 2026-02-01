@@ -153,6 +153,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
     },
+    client_timestamp: {
+      // Timestamp when client sends the message (milliseconds since epoch)
+      // Used for correct message ordering when messages are sent concurrently
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      defaultValue: null,
+    },
   });
 
   Chat.associate = function (models) {

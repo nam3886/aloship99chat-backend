@@ -10,7 +10,7 @@ const {
   Order,
   User,
 } = require("../../../../models");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const EmitDataInGroup = require("../../Group/EmitDataInGroup");
 
 const getMessages = async ({
@@ -65,7 +65,8 @@ const getMessages = async ({
 
   const messages = await Chat.findAll({
     where: { ...updatedFiled, conversation_id },
-    order: [["message_id", "DESC"]],
+    // Sort by client_timestamp if available, fallback to createdAt for old messages
+    order: [[Sequelize.literal('COALESCE(Chat.client_timestamp, UNIX_TIMESTAMP(Chat.createdAt) * 1000)'), 'DESC']],
     limit: message_id == 0 ? limit : 10000,
     offset,
     include: [
